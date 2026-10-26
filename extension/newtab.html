@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Nueva pestaña</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="newtab.css">
+<script src="boot.js"></script>
+</head>
+<body>
+<main id="stage"></main>
+
+<nav id="bar">
+  <button id="bAdd">＋ Cuadro</button>
+  <button id="bBg">Fondo e icono</button>
+  <button id="bExp">Exportar</button>
+  <button id="bImp">Importar</button>
+  <button id="bDone" class="primary">Listo</button>
+  <input id="impFile" type="file" accept="application/json" hidden>
+</nav>
+
+<dialog id="dTile">
+  <form method="dialog">
+    <h2>Cuadro</h2>
+    <label>Enlace
+      <input id="tUrl" type="text" placeholder="youtube.com" autocomplete="off" spellcheck="false">
+    </label>
+    <label>Imagen
+      <span class="row">
+        <img id="tPrev" alt="">
+        <input id="tFile" type="file" accept="image/*">
+        <button type="button" id="tClr">Quitar</button>
+      </span>
+    </label>
+    <div class="cols">
+      <label>Forma
+        <select id="tShape">
+          <option value="rect">Cuadrado</option>
+          <option value="round">Redondeado</option>
+          <option value="circle">Círculo</option>
+        </select>
+      </label>
+      <label>Ajuste
+        <select id="tFit">
+          <option value="cover">Rellenar</option>
+          <option value="contain">Completa</option>
+          <option value="fill">Estirar</option>
+        </select>
+      </label>
+    </div>
+    <menu>
+      <button type="button" id="tDel" class="danger">Eliminar</button>
+      <span class="grow"></span>
+      <button type="button" id="tCancel">Cancelar</button>
+      <button value="ok" class="primary">Guardar</button>
+    </menu>
+  </form>
+</dialog>
+
+<dialog id="dBg">
+  <form method="dialog">
+    <h2>Fondo e icono</h2>
+    <label>Color
+      <input id="bgColor" type="color">
+    </label>
+    <label>Imagen
+      <span class="row">
+        <input id="bgFile" type="file" accept="image/*">
+        <button type="button" id="bgClr">Quitar</button>
+      </span>
+    </label>
+    <label>Icono de la pestaña
+      <span class="row">
+        <img id="icoPrev" alt="">
+        <input id="icoFile" type="file" accept="image/*">
+        <button type="button" id="icoClr">Quitar</button>
+      </span>
+    </label>
+    <label>Ajuste del fondo
+      <select id="bgFit">
+        <option value="cover">Rellenar</option>
+        <option value="contain">Completa</option>
+        <option value="100% 100%">Estirar</option>
+      </select>
+    </label>
+    <menu>
+      <span class="grow"></span>
+      <button value="ok" class="primary">Cerrar</button>
+    </menu>
+  </form>
+</dialog>
+
+<script src="newtab.js"></script>
+</body>
+</html>

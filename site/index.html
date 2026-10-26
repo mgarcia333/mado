@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mosaico — una nueva pestaña a tu manera</title>
+<meta name="description" content="Extensión gratuita para Chrome que sustituye la página de nueva pestaña por un fondo a tu gusto y cuadros con imagen que abren tus webs favoritas. Sin cuentas, sin rastreo.">
+<meta name="theme-color" content="#131316">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mosaico — una nueva pestaña a tu manera">
+<meta property="og:description" content="Fondo propio y cuadros con imagen que abren tus enlaces. Extensión gratuita para Chrome, sin cuentas ni rastreo.">
+<meta property="og:image" content="https://mosaico.mgarciap.workers.dev/og.png">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+:root {
+  --bg: #131316;
+  --raised: #1b1b20;
+  --line: #2c2c33;
+  --text: #e8eaed;
+  --muted: #9aa0a6;
+  --accent: #8ab4f8;
+  --on-accent: #0e1420;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.65 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { width: min(1080px, 100% - 48px); margin-inline: auto; }
+
+/* ---------- Cabecera ---------- */
+header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 650; letter-spacing: .01em; color: var(--text); text-decoration: none; }
+.logo img { width: 26px; height: 26px; border-radius: 6px; }
+header.top nav { display: flex; gap: 26px; font-size: 15px; }
+header.top nav a { color: var(--muted); text-decoration: none; }
+header.top nav a:hover { color: var(--text); }
+
+/* ---------- Portada ---------- */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(32px, 5vw, 72px); align-items: center; padding: clamp(28px, 6vw, 72px) 0 clamp(48px, 7vw, 96px); }
+.hero h1 { margin: 0 0 22px; font-size: clamp(2.5rem, 5.6vw, 4.2rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 650; text-wrap: balance; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p.lead { margin: 0 0 34px; max-width: 30em; color: #c4c7cc; font-size: 1.125rem; }
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 12px; background: var(--accent); color: var(--on-accent); font-weight: 650; text-decoration: none; transition: transform .15s, filter .15s; }
+.btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn svg { width: 18px; height: 18px; }
+.cta small { color: var(--muted); font-size: 14px; line-height: 1.4; }
+
+/* Maqueta de la pestaña: mismas posiciones que el mosaico por defecto */
+.demo { position: relative; }
+.stage { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; background: #202124; border: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .8); overflow: hidden; }
+.stage::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 26px; background: #2a2b2f; border-bottom: 1px solid #000; }
+.stage::after { content: ""; position: absolute; top: 9px; left: 12px; width: 8px; height: 8px; border-radius: 50%; background: #5f6368; box-shadow: 14px 0 #5f6368, 28px 0 #5f6368; }
+.t { position: absolute; overflow: hidden; background: #333; transition: transform .25s ease, outline-color .2s; outline: 2px dashed transparent; outline-offset: -2px; }
+.t.round { border-radius: 14px; }
+.t.circle { border-radius: 50%; }
+.stage .t { margin-top: 13px; }
+.t:hover { transform: translateY(-3px); }
+.t1 { left: 6.5%; top: 10%; width: 15.5%; height: 17%; background: linear-gradient(140deg, #f6d365, #fda085); }
+.t2 { left: 8%; top: 40%; width: 15%; height: 20%; background: radial-gradient(circle at 35% 30%, #cfd9ff, #4b5fd6 70%); }
+.t3 { left: 27.5%; top: 10%; width: 26.5%; height: 38%; background: linear-gradient(#27344f 0 55%, #0f1624 55%); }
+.t3::before { content: ""; position: absolute; inset: auto 0 0 0; height: 58%; background: #3d5a80; clip-path: polygon(0 100%, 0 55%, 22% 20%, 38% 48%, 60% 0, 82% 42%, 100% 26%, 100% 100%); }
+.t3::after { content: ""; position: absolute; width: 14%; aspect-ratio: 1; right: 14%; top: 14%; border-radius: 50%; background: #ffe9a8; }
+.t4 { left: 60%; top: 13%; width: 29%; height: 34%; background: conic-gradient(from 210deg at 60% 60%, #7ee0c3, #2b8a78, #1b4f5e, #7ee0c3); }
+.t5 { left: 60%; top: 61.5%; width: 25%; height: 21%; background: linear-gradient(120deg, #d96c9a, #7a4fc8); }
+.t i { display: none; position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; background: linear-gradient(135deg, transparent 50%, var(--accent) 50%); }
+.stage.editing .t { outline-color: rgba(138, 180, 248, .9); cursor: move; }
+.stage.editing .t i { display: block; }
+.stage .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; background: rgba(0, 0, 0, .55); font-size: 12px; color: #c4c7cc; white-space: nowrap; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.stage.editing .hint { opacity: 1; }
+.toggle { margin-top: 14px; padding: 0; background: none; border: 0; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line); }
+.toggle:hover { color: var(--text); text-decoration-color: var(--accent); }
+
+/* ---------- Secciones ---------- */
+section { padding: clamp(44px, 6vw, 84px) 0; border-top: 1px solid var(--line); }
+.cols { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 8fr); gap: clamp(24px, 5vw, 80px); }
+h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.15; letter-spacing: -.025em; font-weight: 650; text-wrap: balance; }
+.kicker { margin: 0 0 14px; font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.side p { color: var(--muted); margin: 16px 0 0; max-width: 26em; }
+
+.feats { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; }
+.feats li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 6px; }
+.feats b { font: 500 13px/1.9 var(--mono); color: var(--muted); }
+.feats h3 { margin: 0 0 4px; font-size: 1.05rem; font-weight: 650; }
+.feats p { margin: 0; color: #c4c7cc; }
+
+ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 0; }
+ol.steps li { counter-increment: s; position: relative; padding: 0 0 30px 54px; }
+ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 10px; background: var(--raised); border: 1px solid var(--line); display: grid; place-items: center; font: 500 14px var(--mono); color: var(--accent); }
+ol.steps li::after { content: ""; position: absolute; left: 16.5px; top: 40px; bottom: 6px; width: 1px; background: var(--line); }
+ol.steps li:last-child { padding-bottom: 0; }
+ol.steps li:last-child::after { display: none; }
+ol.steps h3 { margin: 4px 0 4px; font-size: 1.05rem; font-weight: 650; }
+ol.steps p { margin: 0; color: #c4c7cc; }
+.path { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 4px 4px 4px 12px; border-radius: 9px; background: var(--raised); border: 1px solid var(--line); font: 14px var(--mono); color: var(--text); }
+.path button { padding: 5px 10px; border-radius: 6px; border: 0; background: #2c2c33; color: var(--text); font: 12px var(--sans); cursor: pointer; }
+.path button:hover { background: #3a3a43; }
+kbd { padding: 1px 6px; border-radius: 5px; border: 1px solid #44444c; background: var(--raised); font: 13px var(--mono); }
+.note { margin-top: 30px; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--raised); border-radius: 0 10px 10px 0; color: #c4c7cc; font-size: 15px; }
+
+.facts { display: grid; gap: 18px; margin: 0; }
+.facts div { padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.facts div:last-child { border-bottom: 0; padding-bottom: 0; }
+.facts dt { font-weight: 650; margin-bottom: 2px; }
+.facts dd { margin: 0; color: #c4c7cc; }
+.facts code, .note code, ol.steps code { font: 14px var(--mono); padding: 1px 6px; border-radius: 5px; background: var(--raised); border: 1px solid var(--line); }
+
+footer { border-top: 1px solid var(--line); padding: 34px 0 52px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
+footer a { color: var(--muted); }
+footer a:hover { color: var(--text); }
+
+@media (max-width: 860px) {
+  .hero, .cols { grid-template-columns: 1fr; }
+  header.top nav { gap: 18px; }
+  header.top nav a:nth-child(2) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .t, .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#"><img src="icon.png" alt="" width="26" height="26">Mosaico</a>
+    <nav aria-label="Principal">
+      <a href="#que-hace">Qué hace</a>
+      <a href="#instalar">Instalación</a>
+      <a href="#privacidad">Privacidad</a>
+      <a href="https://github.com/mgarcia333/mosaico">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1>La pestaña nueva, <em>como tú quieras</em>.</h1>
+        <p class="lead">Mosaico cambia la página en blanco de Chrome por tu propio fondo y unos cuadros con imagen que abren tus webs de siempre. Los colocas donde quieras, del tamaño que quieras. Y ya está.</p>
+        <div class="cta">
+          <a class="btn" href="mosaico.zip" download>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M3.5 16.5h13"/></svg>
+            Descargar Mosaico
+          </a>
+          <small>Versión 1.1.0 · 9&nbsp;KB · gratis<br>Para Chrome y navegadores Chromium</small>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="stage" id="stage" role="img" aria-label="Ejemplo de una pestaña nueva con cinco cuadros de colores colocados sobre un fondo oscuro">
+          <div class="t t1 round"><i></i></div>
+          <div class="t t2 circle"><i></i></div>
+          <div class="t t3 round"><i></i></div>
+          <div class="t t4"><i></i></div>
+          <div class="t t5 round"><i></i></div>
+          <span class="hint">Se arrastran y cambian de tamaño desde la esquina</span>
+        </div>
+        <button class="toggle" id="toggle" type="button" aria-pressed="false">Ver el modo edición</button>
+      </div>
+    </div>
+
+    <section id="que-hace">
+      <div class="cols">
+        <div class="side">
+          <p class="kicker">Qué hace</p>
+          <h2>Una pestaña nueva con lo justo.</h2>
+          <p>Sin buscadores incrustados, sin noticias, sin widgets. Solo lo que tú pongas.</p>
+        </div>
+        <ul class="feats">
+          <li><b>01</b><div><h3>Cuadros que abren tus enlaces</h3><p>Pones una dirección y una imagen, y el cuadro queda como acceso directo. Puede ser cuadrado, redondeado o un círculo, y la imagen se rellena, se muestra completa o se estira.</p></div></li>
+          <li><b>02</b><div><h3>Tu fondo, tu icono</h3><p>Un color liso o una imagen de fondo. También puedes cambiar el icono de la pestaña por el que prefieras.</p></div></li>
+          <li><b>03</b><div><h3>Se edita ahí mismo</h3><p>Arrastras para mover, tiras de la esquina para cambiar el tamaño y sueltas una imagen sobre un cuadro para asignarla. Todo en la propia pestaña, sin menús de ajustes.</p></div></li>
+          <li><b>04</b><div><h3>Copia de seguridad</h3><p>Exporta tu mosaico a un archivo e impórtalo en otro ordenador o después de reinstalar el navegador.</p></div></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="instalar">
+      <div class="cols">
+        <div class="side">
+          <p class="kicker">Instalación</p>
+          <h2>Dos minutos, sin cuenta.</h2>
+          <p>Mosaico todavía no está en la Chrome Web Store, así que se instala a mano. Es seguro y se hace una sola vez.</p>
+        </div>
+        <div>
+          <ol class="steps">
+            <li>
+              <h3>Descarga y descomprime</h3>
+              <p>Baja <a href="mosaico.zip" download>mosaico.zip</a> y extráelo. Te quedará una carpeta llamada <code>mosaico</code>. Guárdala en un sitio donde no te estorbe: Chrome la lee desde ahí, así que no la borres después.</p>
+            </li>
+            <li>
+              <h3>Abre la página de extensiones</h3>
+              <p>Escribe esta dirección en la barra del navegador (en Edge es <code>edge://extensions</code>, en Brave <code>brave://extensions</code>).</p>
+              <span class="path"><span>chrome://extensions</span><button type="button" id="copy">Copiar</button></span>
+            </li>
+            <li>
+              <h3>Activa el modo desarrollador</h3>
+              <p>Es el interruptor de la esquina superior derecha.</p>
+            </li>
+            <li>
+              <h3>Carga la carpeta</h3>
+              <p>Pulsa <b>Cargar descomprimida</b> y elige la carpeta <code>mosaico</code> (la que contiene <code>manifest.json</code>).</p>
+            </li>
+            <li>
+              <h3>Abre una pestaña nueva</h3>
+              <p>La primera vez entra directamente en modo edición con cinco cuadros vacíos. Pulsa uno, ponle un enlace y una imagen, y colócalo a tu gusto.</p>
+            </li>
+          </ol>
+          <p class="note">Para volver a editar: pulsa el icono de Mosaico en la barra de herramientas, o <kbd>Esc</kbd> / <b>Listo</b> para salir del modo edición. Si Chrome te pregunta si quieres mantener la extensión que cambia la nueva pestaña, di que sí.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacidad">
+      <div class="cols">
+        <div class="side">
+          <p class="kicker">Privacidad</p>
+          <h2>Lo que guardas se queda contigo.</h2>
+        </div>
+        <dl class="facts">
+          <div><dt>Nada sale de tu navegador</dt><dd>Los cuadros, las imágenes y el fondo se guardan en el almacenamiento local de la extensión. No hay servidor, ni cuenta, ni analítica, ni peticiones de red.</dd></div>
+          <div><dt>Dos permisos, y solo esos</dt><dd><code>storage</code> para recordar tu mosaico y <code>unlimitedStorage</code> para que las imágenes grandes no se queden sin sitio. No lee las webs que visitas ni tu historial.</dd></div>
+          <div><dt>Código abierto</dt><dd>Son menos de 600 líneas entre HTML, CSS y JavaScript, sin dependencias. Léelas en <a href="https://github.com/mgarcia333/mosaico">GitHub</a> antes de instalarla, si quieres.</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Hecho por Moisés García Poveda, en Barcelona.</span>
+    <span><a href="https://github.com/mgarcia333/mosaico">Código en GitHub</a> · Licencia MIT</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var toggle = document.getElementById('toggle');
+  toggle.addEventListener('click', function () {
+    var on = stage.classList.toggle('editing');
+    toggle.setAttribute('aria-pressed', on);
+    toggle.textContent = on ? 'Salir del modo edición' : 'Ver el modo edición';
+  });
+
+  var copy = document.getElementById('copy');
+  copy.addEventListener('click', function () {
+    var done = function () { copy.textContent = 'Copiado'; setTimeout(function () { copy.textContent = 'Copiar'; }, 1600); };
+    if (navigator.clipboard) navigator.clipboard.writeText('chrome://extensions').then(done, function () {});
+  });
+})();
+</script>
+</body>
+</html>
