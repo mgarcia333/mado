@@ -349,7 +349,7 @@ $('#bExp').onclick = async () => {
   const d = await store.get(null);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], { type: 'application/json' }));
-  a.download = 'mosaico-backup.json';
+  a.download = 'mado-backup.json';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };

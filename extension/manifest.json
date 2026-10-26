@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Mosaico - Nueva pestaña",
+  "name": "Mado - Nueva pestaña",
   "version": "1.1.0",
   "description": "Nueva pestaña minimalista: fondo propio y cuadros con imagen que abren tus enlaces.",
   "chrome_url_overrides": { "newtab": "newtab.html" },
   "background": { "service_worker": "background.js" },
-  "action": { "default_title": "Editar mosaico" },
+  "action": { "default_title": "Editar Mado" },
   "permissions": ["storage", "unlimitedStorage"],
   "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" }
 }
